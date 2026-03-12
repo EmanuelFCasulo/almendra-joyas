@@ -68,6 +68,14 @@
       </div>
 
       <button
+        id="clear-btn"
+        disabled
+        class="w-full py-2 rounded-xl border border-red-200 text-red-400 hover:bg-red-50 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium transition-colors"
+      >
+        🗑️ Vaciar carrito
+      </button>
+
+      <button
         id="checkout-btn"
         disabled
         class="w-full py-3 rounded-2xl bg-green-500 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition-colors flex items-center justify-center gap-2"
@@ -99,16 +107,22 @@
   const cartTotalEl = document.getElementById('cart-total');
   const cartEmptyEl = document.getElementById('cart-empty');
   const checkoutBtn = document.getElementById('checkout-btn');
+  const clearBtn    = document.getElementById('clear-btn');
+  const wpFlotante  = document.getElementById('whatsapp-flotante');
 
   // ── Abrir / cerrar drawer ──────────────────────────────
   function openCart() {
     cartOverlay.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    // Ocultar el botón flotante de WhatsApp para no superponer
+    wpFlotante?.classList.add('hidden');
   }
 
   function closeCart() {
     cartOverlay.classList.add('hidden');
     document.body.style.overflow = '';
+    // Volver a mostrar el botón flotante
+    wpFlotante?.classList.remove('hidden');
   }
 
   cartBtn.addEventListener('click', openCart);
@@ -176,8 +190,16 @@
     const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
     cartTotalEl.textContent = fmt(total);
 
-    // 4. Habilitar/deshabilitar botón de checkout
+    // 4. Habilitar/deshabilitar botones de acción
     checkoutBtn.disabled = items.length === 0;
+    clearBtn.disabled    = items.length === 0;
+  });
+
+  // ── Vaciar carrito ─────────────────────────────────────
+  clearBtn.addEventListener('click', () => {
+    if (confirm('¿Vacúr el carrito? Se eliminarán todos los productos.')) {
+      clearCart();
+    }
   });
 
   // ── Checkout: formatear mensaje y abrir WhatsApp ──────
