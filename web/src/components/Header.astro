@@ -1,0 +1,206 @@
+---
+// Este componente no necesita props: todo lo maneja el script del cliente
+---
+
+<!-- ── BARRA DE NAVEGACIÓN ── -->
+<header class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-100 shadow-sm">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+
+    <!-- Logo / Marca -->
+    <a href="/" class="flex items-center gap-2 text-amber-800 hover:text-amber-600 transition-colors">
+      <span class="text-2xl">✨</span>
+      <span class="font-bold text-xl tracking-wide">Almendra Joyas</span>
+    </a>
+
+    <!-- Botón del carrito -->
+    <button
+      id="cart-btn"
+      aria-label="Abrir carrito"
+      class="relative p-2 rounded-full hover:bg-amber-50 transition-colors"
+    >
+      <!-- Ícono de bolsa de compras -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+      </svg>
+      <!-- Badge con la cantidad de ítems -->
+      <span
+        id="cart-badge"
+        class="hidden absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none"
+      >0</span>
+    </button>
+
+  </div>
+</header>
+
+<!-- ── OVERLAY + DRAWER DEL CARRITO ── -->
+<div id="cart-overlay" class="hidden fixed inset-0 z-50">
+
+  <!-- Fondo semitransparente (clic para cerrar) -->
+  <div id="cart-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <!-- Panel lateral deslizante desde la derecha -->
+  <div class="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col">
+
+    <!-- Cabecera del panel -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <h2 class="text-lg font-bold text-amber-900">🛒 Tu carrito</h2>
+      <button id="cart-close" aria-label="Cerrar carrito" class="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-lg hover:bg-gray-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Lista de ítems (zona scrollable) -->
+    <div class="flex-1 overflow-y-auto px-5 py-4">
+      <p id="cart-empty" class="text-center text-gray-400 italic mt-10">
+        Tu carrito está vacío 🌸
+      </p>
+      <ul id="cart-items" class="divide-y divide-gray-100"></ul>
+    </div>
+
+    <!-- Pie del panel: total + botones -->
+    <div class="px-5 py-4 border-t border-gray-100 bg-stone-50 space-y-3">
+
+      <div class="flex items-center justify-between text-base font-semibold text-gray-700">
+        <span>Total a pagar:</span>
+        <span id="cart-total" class="text-amber-700 text-lg font-bold">$0</span>
+      </div>
+
+      <button
+        id="checkout-btn"
+        disabled
+        class="w-full py-3 rounded-2xl bg-green-500 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition-colors flex items-center justify-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M11.944 0a11.944 11.944 0 100 23.888 11.944 11.944 0 000-23.888zm6.261 17.046c-.26.715-1.502 1.404-2.081 1.492-.528.08-1.2.114-1.937-.121-.446-.142-1.018-.33-1.752-.647-3.084-1.327-5.102-4.414-5.253-4.617-.148-.202-1.222-1.634-1.222-3.115 0-1.481.766-2.207 1.04-2.512a1.1 1.1 0 01.8-.37c.2 0 .397.004.571.011.183.008.428-.07.67.511.248.597.841 2.058.916 2.207.074.149.124.322.025.52-.1.2-.149.323-.298.497-.148.174-.313.388-.446.52-.148.148-.303.309-.13.607.173.298.776 1.27 1.66 2.06 1.14 1.016 2.101 1.33 2.4 1.48.297.148.47.124.644-.075.174-.198.743-.867.94-1.164.198-.298.397-.248.67-.149.272.1 1.731.817 2.028.967.297.148.496.222.57.347.075.124.075.719-.173 1.413z"/>
+        </svg>
+        Finalizar pedido por WhatsApp
+      </button>
+
+    </div>
+  </div><!-- /panel -->
+</div><!-- /overlay -->
+
+
+<script>
+  import { cartStore, removeFromCart, clearCart } from '../store/cartStore.js';
+
+  const WHATSAPP = '5491158575160';
+
+  // Referencias a los elementos del DOM
+  const cartBtn     = document.getElementById('cart-btn');
+  const cartOverlay = document.getElementById('cart-overlay');
+  const cartClose   = document.getElementById('cart-close');
+  const cartBackdrop= document.getElementById('cart-backdrop');
+  const cartBadge   = document.getElementById('cart-badge');
+  const cartItemsEl = document.getElementById('cart-items');
+  const cartTotalEl = document.getElementById('cart-total');
+  const cartEmptyEl = document.getElementById('cart-empty');
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  // ── Abrir / cerrar drawer ──────────────────────────────
+  function openCart() {
+    cartOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCart() {
+    cartOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  cartBtn.addEventListener('click', openCart);
+  cartClose.addEventListener('click', closeCart);
+  cartBackdrop.addEventListener('click', closeCart);
+
+  // Cerrar con la tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeCart();
+  });
+
+  // ── Formatear precio en pesos argentinos ──────────────
+  function fmt(precio) {
+    return precio?.toLocaleString('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 0,
+    });
+  }
+
+  // ── Suscripción al store: se ejecuta cada vez que el carrito cambia ──
+  cartStore.subscribe((items) => {
+
+    // 1. Actualizar el badge
+    const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
+    cartBadge.textContent = totalItems;
+    if (totalItems > 0) {
+      cartBadge.classList.remove('hidden');
+      cartBadge.classList.add('flex');
+    } else {
+      cartBadge.classList.add('hidden');
+      cartBadge.classList.remove('flex');
+    }
+
+    // 2. Mostrar mensaje vacío o lista de ítems
+    if (items.length === 0) {
+      cartEmptyEl.style.display = 'block';
+      cartItemsEl.innerHTML = '';
+    } else {
+      cartEmptyEl.style.display = 'none';
+      cartItemsEl.innerHTML = items.map((item) => `
+        <li class="flex items-center gap-3 py-3" data-id="${item.id}">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-amber-900 truncate">${item.nombre}</p>
+            <p class="text-xs text-gray-400 mt-0.5">
+              ${item.cantidad} × ${fmt(item.precio)}
+            </p>
+          </div>
+          <p class="text-sm font-bold text-amber-700 shrink-0">${fmt(item.precio * item.cantidad)}</p>
+          <button
+            data-remove="${item.id}"
+            aria-label="Eliminar ${item.nombre}"
+            class="shrink-0 text-gray-300 hover:text-red-400 transition-colors text-2xl leading-none"
+          >&times;</button>
+        </li>
+      `).join('');
+
+      // Adjuntar listeners a los botones de eliminar (se recrean con innerHTML)
+      cartItemsEl.querySelectorAll('[data-remove]').forEach((btn) => {
+        btn.addEventListener('click', () => removeFromCart(btn.dataset.remove));
+      });
+    }
+
+    // 3. Actualizar total
+    const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+    cartTotalEl.textContent = fmt(total);
+
+    // 4. Habilitar/deshabilitar botón de checkout
+    checkoutBtn.disabled = items.length === 0;
+  });
+
+  // ── Checkout: formatear mensaje y abrir WhatsApp ──────
+  checkoutBtn.addEventListener('click', () => {
+    const items = cartStore.get();
+    if (!items.length) return;
+
+    const lineas = items
+      .map((item) => `  • ${item.cantidad}x ${item.nombre} → ${fmt(item.precio * item.cantidad)}`)
+      .join('\n');
+    const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+
+    const mensaje =
+      `¡Hola! Quiero hacer el siguiente encargo:\n\n${lineas}\n\n` +
+      `💰 *Total: ${fmt(total)}*\n\n¿Está disponible todo? ¡Gracias! 🌸`;
+
+    window.open(
+      `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
+
+    clearCart();
+    closeCart();
+  });
+</script>

@@ -1,23 +1,23 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>Almendra Joyas</title>
 	</head>
-	<body>
-		<slot />
+	<body class="bg-stone-50 min-h-screen">
+		<Header />
+		<!-- pt-16 compensa la altura del header fijo (h-16) -->
+		<div class="pt-16">
+			<slot />
+		</div>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
