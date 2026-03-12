@@ -7,6 +7,7 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
   _id,
   nombre,
   precio,
+  categoria,
   stock,
   descripcion,
   imagen
@@ -21,13 +22,32 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
       <p class="text-gray-400 italic">Bijouterie artesanal con amor ✨</p>
     </div>
 
+    <div class="flex flex-wrap items-center justify-center gap-2 mb-8" data-filter-group>
+      <button type="button" class="categoria-btn rounded-full border border-amber-200 bg-amber-700 px-4 py-2 text-sm font-semibold text-white transition-colors" data-filter="todos" aria-pressed="true">
+        Todos
+      </button>
+      <button type="button" class="categoria-btn rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-50" data-filter="anillos" aria-pressed="false">
+        Anillos
+      </button>
+      <button type="button" class="categoria-btn rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-50" data-filter="pulseras" aria-pressed="false">
+        Pulseras
+      </button>
+      <button type="button" class="categoria-btn rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-50" data-filter="collares" aria-pressed="false">
+        Collares
+      </button>
+      <button type="button" class="categoria-btn rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-50" data-filter="aros" aria-pressed="false">
+        Aros
+      </button>
+    </div>
+
     <!-- Grilla de productos -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" data-product-grid>
       {productos.map((producto) => (
         <ProductoCard
           id={producto._id}
           nombre={producto.nombre}
           precio={producto.precio}
+          categoria={producto.categoria}
           descripcion={producto.descripcion}
           stock={producto.stock}
           imagenUrl={producto.imagen ? urlFor(producto.imagen).width(500).height(500).fit('crop').url() : null}
@@ -38,4 +58,37 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
 
   </main>
 </Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll('[data-filter-group] [data-filter]');
+  const productCards = document.querySelectorAll('[data-product-card]');
+
+  function setActiveButton(activeButton) {
+    filterButtons.forEach((button) => {
+      const isActive = button === activeButton;
+
+      button.setAttribute('aria-pressed', String(isActive));
+      button.classList.toggle('bg-amber-700', isActive);
+      button.classList.toggle('text-white', isActive);
+      button.classList.toggle('bg-white', !isActive);
+      button.classList.toggle('text-amber-800', !isActive);
+      button.classList.toggle('hover:bg-amber-50', !isActive);
+    });
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const selectedCategory = button.dataset.filter;
+
+      setActiveButton(button);
+
+      productCards.forEach((card) => {
+        const cardCategory = card.dataset.categoria;
+        const shouldShow = selectedCategory === 'todos' || cardCategory === selectedCategory;
+
+        card.classList.toggle('hidden', !shouldShow);
+      });
+    });
+  });
+</script>
 

@@ -30,6 +30,21 @@ export const producto = {
       name: 'descripcion',
       title: 'Descripción / Detalles',
       type: 'text',
-    }
+    },
+    {
+      name: 'categoria',
+      title: 'Categoría',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Anillos', value: 'anillos' },
+          { title: 'Pulseras', value: 'pulseras' },
+          { title: 'Collares', value: 'collares' },
+          { title: 'Aros', value: 'aros' },
+          { title: 'Otros', value: 'otros' }
+        ],
+        layout: 'radio' // botones redondos para elegir
+      }
+    },
   ]
 }
