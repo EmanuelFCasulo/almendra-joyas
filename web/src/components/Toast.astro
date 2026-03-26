@@ -1,0 +1,104 @@
+---
+// Toast.astro - Contenedor para notificaciones flotantes
+// Este componente se renderiza una sola vez en el Layout
+// Los toasts individuales se agregan dinámicamente via JavaScript
+---
+
+<div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none space-y-3 max-w-sm">
+  <!-- Los toasts se renderizarán aquí dinámicamente -->
+</div>
+
+<script>
+  // Función global para mostrar toasts
+  (window as any).showToast = function(
+    message: string = '¡Agregado a tu pedido!',
+    options: { duration?: number; type?: 'success' | 'error' | 'info'; position?: string } = {}
+  ) {
+    const {
+      duration = 3000,
+      type = 'success',
+      position = 'top-right'
+    } = options;
+
+    const container = document.getElementById('toast-container') as HTMLElement | null;
+    if (!container) return;
+
+    // Crear elemento del toast
+    const toast = document.createElement('div');
+    toast.className = `
+      toast-item
+      flex items-center gap-3
+      px-4 py-3 rounded-xl
+      text-white text-sm font-medium
+      shadow-lg backdrop-blur-sm
+      animate-slide-in
+      pointer-events-auto
+      ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'}
+    `;
+
+    // Ícono según el tipo
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+    
+    toast.innerHTML = `
+      <span class="text-lg">${icon}</span>
+      <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Animación de entrada (slide in)
+    setTimeout(() => {
+      toast.classList.remove('animate-slide-in');
+      toast.classList.add('opacity-100');
+    }, 10);
+
+    // Auto-remover después del duration
+    const timeout = setTimeout(() => {
+      toast.classList.add('animate-slide-out');
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }, duration);
+
+    // Permitir cerrar el toast manualmente con click
+    toast.addEventListener('click', () => {
+      clearTimeout(timeout);
+      toast.classList.add('animate-slide-out');
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    });
+  };
+</script>
+
+<style>
+  @keyframes slideIn {
+    from {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .animate-slide-out {
+    animation: slideOut 0.3s ease-in forwards;
+  }
+</style>

@@ -16,9 +16,22 @@ const anio = new Date().getFullYear();
     <!-- Redes sociales -->
     <div class="flex items-center gap-4">
 
+      <!-- Guía de Talles -->
+      <button
+        onclick="window.openGuiaTalles?.()"
+        aria-label="Abrir Guía de Talles"
+        class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-amber-600 transition-colors group cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5 group-hover:scale-110 transition-transform">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4M12 8h.01"></path>
+        </svg>
+        Talles
+      </button>
+
       <!-- Instagram -->
       <a
-        href="https://instagram.com/"
+        href="https://instagram.com/aalmendra.ok"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram de Almendra Joyas"
@@ -29,21 +42,6 @@ const anio = new Date().getFullYear();
         </svg>
         Instagram
       </a>
-
-      <!-- Facebook -->
-      <a
-        href="https://facebook.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Facebook de Almendra Joyas"
-        class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors group"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform">
-          <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.027 4.388 11.02 10.125 11.928v-8.437H7.078v-3.49h3.047V9.413c0-3.026 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.884v2.267h3.328l-.532 3.49h-2.796v8.437C19.612 23.093 24 18.1 24 12.073z"/>
-        </svg>
-        Facebook
-      </a>
-
     </div>
   </div>
 </footer>

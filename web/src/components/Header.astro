@@ -1,14 +1,15 @@
 ---
 // Este componente no necesita props: todo lo maneja el script del cliente
+import logo from '../assets/img/logo.jpg';
 ---
 
 <!-- ── BARRA DE NAVEGACIÓN ── -->
-<header class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-100 shadow-sm">
+<header class="fixed top-7 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-100 shadow-sm">
   <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
 
     <!-- Logo / Marca -->
     <a href="/" class="flex items-center gap-2 text-amber-800 hover:text-amber-600 transition-colors">
-      <span class="text-2xl">✨</span>
+      <img src={logo.src} alt="Almendra Joyas Logo" class="h-10 w-10 object-cover rounded-full" />
       <span class="font-bold text-xl tracking-wide">Almendra Joyas</span>
     </a>
 
@@ -25,7 +26,7 @@
       <!-- Badge con la cantidad de ítems -->
       <span
         id="cart-badge"
-        class="hidden absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none"
+        class="absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none" style="display: none;"
       >0</span>
     </button>
 
@@ -95,39 +96,43 @@
 <script>
   import { cartStore, removeFromCart, clearCart } from '../store/cartStore.js';
 
-  const WHATSAPP = '5491158575160';
+  const WHATSAPP = '541121584057';
 
   // Referencias a los elementos del DOM
-  const cartBtn     = document.getElementById('cart-btn');
-  const cartOverlay = document.getElementById('cart-overlay');
-  const cartClose   = document.getElementById('cart-close');
-  const cartBackdrop= document.getElementById('cart-backdrop');
-  const cartBadge   = document.getElementById('cart-badge');
-  const cartItemsEl = document.getElementById('cart-items');
-  const cartTotalEl = document.getElementById('cart-total');
-  const cartEmptyEl = document.getElementById('cart-empty');
-  const checkoutBtn = document.getElementById('checkout-btn');
-  const clearBtn    = document.getElementById('clear-btn');
+  const cartBtn     = document.getElementById('cart-btn') as HTMLButtonElement | null;
+  const cartOverlay = document.getElementById('cart-overlay') as HTMLElement | null;
+  const cartClose   = document.getElementById('cart-close') as HTMLElement | null;
+  const cartBackdrop= document.getElementById('cart-backdrop') as HTMLElement | null;
+  const cartBadge   = document.getElementById('cart-badge') as HTMLElement | null;
+  const cartItemsEl = document.getElementById('cart-items') as HTMLElement | null;
+  const cartTotalEl = document.getElementById('cart-total') as HTMLElement | null;
+  const cartEmptyEl = document.getElementById('cart-empty') as HTMLElement | null;
+  const checkoutBtn = document.getElementById('checkout-btn') as HTMLButtonElement | null;
+  const clearBtn    = document.getElementById('clear-btn') as HTMLButtonElement | null;
   const wpFlotante  = document.getElementById('whatsapp-flotante');
 
   // ── Abrir / cerrar drawer ──────────────────────────────
   function openCart() {
-    cartOverlay.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    // Ocultar el botón flotante de WhatsApp para no superponer
-    wpFlotante?.classList.add('hidden');
+    if (cartOverlay) {
+      cartOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      // Ocultar el botón flotante de WhatsApp para no superponer
+      wpFlotante?.classList.add('hidden');
+    }
   }
 
   function closeCart() {
-    cartOverlay.classList.add('hidden');
-    document.body.style.overflow = '';
-    // Volver a mostrar el botón flotante
-    wpFlotante?.classList.remove('hidden');
+    if (cartOverlay) {
+      cartOverlay.classList.add('hidden');
+      document.body.style.overflow = '';
+      // Volver a mostrar el botón flotante
+      wpFlotante?.classList.remove('hidden');
+    }
   }
 
-  cartBtn.addEventListener('click', openCart);
-  cartClose.addEventListener('click', closeCart);
-  cartBackdrop.addEventListener('click', closeCart);
+  if (cartBtn) cartBtn.addEventListener('click', openCart);
+  if (cartClose) cartClose.addEventListener('click', closeCart);
+  if (cartBackdrop) cartBackdrop.addEventListener('click', closeCart);
 
   // Cerrar con la tecla Escape
   document.addEventListener('keydown', (e) => {
@@ -135,7 +140,7 @@
   });
 
   // ── Formatear precio en pesos argentinos ──────────────
-  function fmt(precio) {
+  function fmt(precio: number) {
     return precio?.toLocaleString('es-AR', {
       style: 'currency',
       currency: 'ARS',
@@ -144,26 +149,29 @@
   }
 
   // ── Suscripción al store: se ejecuta cada vez que el carrito cambia ──
-  cartStore.subscribe((items) => {
+  cartStore.subscribe((items: any[]) => {
 
     // 1. Actualizar el badge
-    const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
-    cartBadge.textContent = totalItems;
-    if (totalItems > 0) {
-      cartBadge.classList.remove('hidden');
-      cartBadge.classList.add('flex');
-    } else {
-      cartBadge.classList.add('hidden');
-      cartBadge.classList.remove('flex');
+    const totalItems = items.reduce((sum: number, item: any) => sum + item.cantidad, 0);
+    if (cartBadge) {
+      cartBadge.textContent = String(totalItems);
+      if (totalItems > 0) {
+        cartBadge.classList.remove('hidden');
+        cartBadge.classList.add('flex');
+      } else {
+        cartBadge.classList.add('hidden');
+        cartBadge.classList.remove('flex');
+      }
     }
 
     // 2. Mostrar mensaje vacío o lista de ítems
     if (items.length === 0) {
-      cartEmptyEl.style.display = 'block';
-      cartItemsEl.innerHTML = '';
+      if (cartEmptyEl) cartEmptyEl.style.display = 'block';
+      if (cartItemsEl) cartItemsEl.innerHTML = '';
     } else {
-      cartEmptyEl.style.display = 'none';
-      cartItemsEl.innerHTML = items.map((item) => `
+      if (cartEmptyEl) cartEmptyEl.style.display = 'none';
+      if (cartItemsEl) {
+        cartItemsEl.innerHTML = items.map((item: any) => `
         <li class="flex items-center gap-3 py-3" data-id="${item.id}">
           <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-amber-900 truncate">${item.nombre}</p>
@@ -179,50 +187,57 @@
           >&times;</button>
         </li>
       `).join('');
-
-      // Adjuntar listeners a los botones de eliminar (se recrean con innerHTML)
-      cartItemsEl.querySelectorAll('[data-remove]').forEach((btn) => {
-        btn.addEventListener('click', () => removeFromCart(btn.dataset.remove));
-      });
+        // Adjuntar listeners a los botones de eliminar (se recrean con innerHTML)
+        cartItemsEl.querySelectorAll('[data-remove]').forEach((btn) => {
+          const btnElement = btn as HTMLElement & { dataset: { remove: string } };
+          btnElement.addEventListener('click', () => {
+            removeFromCart(btnElement.dataset.remove);
+          });
+        });
+      }
     }
 
     // 3. Actualizar total
-    const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-    cartTotalEl.textContent = fmt(total);
+    const total = items.reduce((sum: number, item: any) => sum + item.precio * item.cantidad, 0);
+    if (cartTotalEl) cartTotalEl.textContent = fmt(total);
 
     // 4. Habilitar/deshabilitar botones de acción
-    checkoutBtn.disabled = items.length === 0;
-    clearBtn.disabled    = items.length === 0;
+    if (checkoutBtn) checkoutBtn.disabled = items.length === 0;
+    if (clearBtn) clearBtn.disabled = items.length === 0;
   });
 
   // ── Vaciar carrito ─────────────────────────────────────
-  clearBtn.addEventListener('click', () => {
-    if (confirm('¿Vacúr el carrito? Se eliminarán todos los productos.')) {
-      clearCart();
-    }
-  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (confirm('¿Vaciar el carrito? Se eliminarán todos los productos.')) {
+        clearCart();
+      }
+    });
+  }
 
   // ── Checkout: formatear mensaje y abrir WhatsApp ──────
-  checkoutBtn.addEventListener('click', () => {
-    const items = cartStore.get();
-    if (!items.length) return;
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+      const items = cartStore.get();
+      if (!items.length) return;
 
-    const lineas = items
-      .map((item) => `  • ${item.cantidad}x ${item.nombre} → ${fmt(item.precio * item.cantidad)}`)
-      .join('\n');
-    const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+      const lineas = items
+        .map((item: any) => `  • ${item.cantidad}x ${item.nombre} → ${fmt(item.precio * item.cantidad)}`)
+        .join('\n');
+      const total = items.reduce((sum: number, item: any) => sum + item.precio * item.cantidad, 0);
 
-    const mensaje =
-      `¡Hola! Quiero hacer el siguiente encargo:\n\n${lineas}\n\n` +
-      `💰 *Total: ${fmt(total)}*\n\n¿Está disponible todo? ¡Gracias! 🌸`;
+      const mensaje =
+        `¡Hola! Quiero hacer el siguiente encargo:\n\n${lineas}\n\n` +
+        `💰 *Total: ${fmt(total)}*\n\n¿Está disponible todo? ¡Gracias! 🌸`;
 
-    window.open(
-      `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`,
-      '_blank',
-      'noopener,noreferrer'
-    );
+      window.open(
+        `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`,
+        '_blank',
+        'noopener,noreferrer'
+      );
 
-    clearCart();
-    closeCart();
-  });
+      clearCart();
+      closeCart();
+    });
+  }
 </script>

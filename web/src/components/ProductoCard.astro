@@ -92,20 +92,31 @@ const categoriaLabel = categoria
   // pero querySelectorAll los encuentra a todos porque el DOM ya está listo)
   document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const id     = btn.dataset.productoId;
-      const nombre = btn.dataset.productoNombre;
-      const precio = Number(btn.dataset.productoPrecio);
+      const btnElement = btn as HTMLButtonElement;
+      const id     = btnElement.dataset.productoId || '';
+      const nombre = btnElement.dataset.productoNombre || '';
+      const precio = Number(btnElement.dataset.productoPrecio);
 
-      addToCart({ id, nombre, precio });
+      if (id && nombre) {
+        addToCart({ id, nombre, precio });
+      
+      // Mostrar Toast de confirmación
+      if (typeof window !== 'undefined' && (window as any).showToast) {
+        (window as any).showToast('¡Agregado a tu pedido! 🎉', {
+          duration: 3000,
+          type: 'success'
+        });
+      }
 
-      // Feedback visual: el botón confirma por 1.5 segundos
-      const original = btn.innerHTML;
-      btn.innerHTML = '✓ ¡Agregado!';
-      btn.disabled = true;
-      setTimeout(() => {
-        btn.innerHTML = original;
-        btn.disabled = false;
-      }, 1500);
+        // Feedback visual: el botón confirma por 1.5 segundos
+        const original = btnElement.innerHTML;
+        btnElement.innerHTML = '✓ ¡Agregado!';
+        btnElement.disabled = true;
+        setTimeout(() => {
+          btnElement.innerHTML = original;
+          btnElement.disabled = false;
+        }, 1500);
+      }
     });
   });
 </script>

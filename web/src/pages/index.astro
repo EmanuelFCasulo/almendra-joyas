@@ -42,7 +42,7 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
 
     <!-- Grilla de productos -->
     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" data-product-grid>
-      {productos.map((producto) => (
+      {productos.map((producto: any) => (
         <ProductoCard
           id={producto._id}
           nombre={producto.nombre}
@@ -51,7 +51,7 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
           descripcion={producto.descripcion}
           stock={producto.stock}
           imagenUrl={producto.imagen ? urlFor(producto.imagen).width(500).height(500).fit('crop').url() : null}
-          whatsappUrl={`https://wa.me/5491158575160?text=${encodeURIComponent(`Hola! Me interesa: ${producto.nombre} — $${producto.precio}. ¿Está disponible?`)}`}
+          whatsappUrl={`https://wa.me/541121584057?text=${encodeURIComponent(`Hola! Me interesa: ${producto.nombre} — $${producto.precio}. ¿Está disponible?`)}`}
         />
       ))}
     </div>
@@ -63,7 +63,7 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
   const filterButtons = document.querySelectorAll('[data-filter-group] [data-filter]');
   const productCards = document.querySelectorAll('[data-product-card]');
 
-  function setActiveButton(activeButton) {
+  function setActiveButton(activeButton: Element) {
     filterButtons.forEach((button) => {
       const isActive = button === activeButton;
 
@@ -78,15 +78,17 @@ const productos = await client.fetch(`*[_type == "producto"] | order(_createdAt 
 
   filterButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      const selectedCategory = button.dataset.filter;
+      const btnElement = button as HTMLElement;
+      const selectedCategory = btnElement.dataset.filter;
 
       setActiveButton(button);
 
       productCards.forEach((card) => {
-        const cardCategory = card.dataset.categoria;
+        const cardElement = card as HTMLElement;
+        const cardCategory = cardElement.dataset.categoria;
         const shouldShow = selectedCategory === 'todos' || cardCategory === selectedCategory;
 
-        card.classList.toggle('hidden', !shouldShow);
+        cardElement.classList.toggle('hidden', !shouldShow);
       });
     });
   });
